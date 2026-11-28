@@ -5,8 +5,8 @@ using u64 = unsigned long long;
 
 template <int P>
 struct ntt_base : vector<int> {
-    static constexpr int N = 1 << 23;
-    static inline int rev[N], rpt[N], m, inv_m;
+    static inline int m, inv_m;
+    static inline vector<int> rev, rpt;
 
     ntt_base(int _n = 0) : vector<int>(_n) {}
     
@@ -19,6 +19,7 @@ struct ntt_base : vector<int> {
     void init(int M) {
         for (m = 1; m < M; m <<= 1);
         inv_m = P - (P - 1) / m;
+        rev.resize(m), rpt.resize(m);
         for (int i = 1; i < m; i <<= 1) {
             rpt[i] = 1;
             for (int j = 1, w = qpow(3, P / i / 2); j < i; j++)
@@ -29,7 +30,8 @@ struct ntt_base : vector<int> {
         }
     }
     void dft() {
-        static u64 a[N]; auto& t = *this; t.resize(m);
+        static vector<u64> a;
+        auto& t = *this; t.resize(m); a.resize(m);
         for (int i = 0; i < m; i++) a[i] = t[rev[i]];
         for (int i = 1; i < m; i <<= 1) {
             if (i >> 18 & 1) for (int j = 0; j < m; j++) a[j] %= P;
@@ -48,7 +50,6 @@ struct ntt_base : vector<int> {
         for (int i = 0; i < m; i++) t[i] = u64(t[i]) * inv_m % P;
     }
     friend ntt_base operator* (ntt_base lhs, ntt_base rhs) {
-        assert(lhs.size() && rhs.size());
         ntt_base{}.init(lhs.size() + rhs.size() - 1);
         lhs.dft();
         rhs.dft();

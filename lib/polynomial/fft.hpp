@@ -7,16 +7,17 @@ using CP = complex<double>;
 constexpr double PI = numbers::pi;
 
 struct fft_base : vector<CP> {
-    static constexpr int N = 1 << 23;
-    static inline CP rpt[N];
-    static inline int rev[N], m;
+    static inline int m;
     static inline double inv_m;
+    static inline vector<CP> rpt;
+    static inline vector<int> rev;
 
     fft_base(int _n = 0) : vector<CP>(_n) {}
 
     void init(int M) {
         for (m = 1; m < M; m <<= 1);
         inv_m = 1.0 / m;
+        rev.resize(m), rev.resize(m);
         for (int i = 1; i < m; i <<= 1) {
             rpt[i] = 1;
             for (int j = 1; j < i; j++)
@@ -44,7 +45,6 @@ struct fft_base : vector<CP> {
         for (int i = 0; i < m; i++) t[i] *= inv_m;
     }
     friend fft_base operator* (fft_base lhs, fft_base rhs) {
-        assert(lhs.size() && rhs.size());
         fft_base{}.init(lhs.size() + rhs.size() - 1);
         lhs.dft();
         rhs.dft();

@@ -1,0 +1,4 @@
+wsl2 ubuntu-26.04 i7-13700hx 2core 2048mb: 270ms
+qoj: 280ms
+atcoder: 330ms
+codeforces: 750ms
