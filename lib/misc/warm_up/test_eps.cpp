@@ -19,12 +19,12 @@ int main() {
         113       33
     */
 
-    cout << "double:        " << calc_bits<double>() << '\n';
-    cout << "long double:   " << calc_bits<long double>() << '\n';
-    cout << "__float128:    " << calc_bits<__float128>() << '\n';
+    cout << "double:      " << calc_bits<double>() << '\n';
+    cout << "long double: " << calc_bits<long double>() << '\n';
+    cout << "__float128:  " << calc_bits<__float128>() << '\n';
 
     assert( calc_bits<double>() == 53 );
-    assert( calc_bits<long double>() == 64);
+    assert( calc_bits<long double>() == 64 );
     assert( calc_bits<__float128>() == 113 );
 
     return 0;
