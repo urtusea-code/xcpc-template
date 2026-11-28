@@ -6,7 +6,7 @@ using u64 = unsigned long long;
 struct DSU {
     vector<int> f;
     
-    DSU(int _n = 0) : f(_n, -1) {}
+    DSU(int _n = 0) : f(_n + 1, -1) {}
 
     int find(int u) {
         return f[u] < 0 ? u : f[u] = find(f[u]);

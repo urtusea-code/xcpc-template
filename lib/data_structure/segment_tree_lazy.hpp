@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
+using i64 = long long;
+using u64 = unsigned long long;
 
 template <class meta>
 struct segment_tree {
@@ -14,7 +16,7 @@ struct segment_tree {
         data[p].cls();
     }
     meta pull(meta lhs, meta rhs) {
-        // TODO
+        return meta{max(lhs.val, rhs.val)};
     }
     void set(int l, int r, auto&& call, int p = 0) {
         if (l + 1 == r) return data[p] = call(l), void();
@@ -39,7 +41,7 @@ struct segment_tree {
         int m = (l + r) >> 1;
         return pull(ask(l, m, L, R, lson(p)), ask(m, r, L, R, rson(p)));
     }
-    auto find_prev(int l, int r, int L, int R, meta& pref, auto&& check, int p = 0) {
+    auto find_pref(int l, int r, int L, int R, meta& pref, auto&& check, int p = 0) {
         if (R <= l || r <= L) return R;
         if (L <= l && r <= R) {
             meta cur = pull(pref, data[p]);
@@ -48,19 +50,20 @@ struct segment_tree {
         }
         push(p, l, r);
         int m = (l + r) >> 1;
-        int res = find_prev(l, m, L, R, pref, check, lson(p));
-        return res != R ? res : find_prev(m, r, L, R, pref, check, rson(p));
+        int res = find_pref(l, m, L, R, pref, check, lson(p));
+        return res != R ? res : find_pref(m, r, L, R, pref, check, rson(p));
     }
-    auto find_last(int l, int r, int L, int R, meta& pref, auto&& check, int p = 0) {
-        if (R <= l || r <= L) return R;
+    auto find_suff(int l, int r, int L, int R, meta& suff, auto&& check, int p = 0) {
+        if (R <= l || r <= L) return L - 1;
         if (L <= l && r <= R) {
-            meta cur = pull(data[p], pref);
-            if (!check(cur)) return pref = move(cur), L;
+            meta cur = pull(data[p], suff);
+            if (!check(cur)) return suff = move(cur), L - 1;
             if ( l + 1 == r) return l;
         }
         push(p, l, r);
         int m = (l + r) >> 1;
-        int res = find_last(m, r, L, R, pref, check, rson(p));
+        int res = find_suff(m, r, L, R, suff, check, rson(p));
+        return res != L - 1 ? res : find_suff(l, m, L, R, suff, check, lson(p));
     }
 };
 

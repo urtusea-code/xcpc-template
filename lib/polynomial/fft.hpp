@@ -17,7 +17,7 @@ struct fft_base : vector<CP> {
     void init(int M) {
         for (m = 1; m < M; m <<= 1);
         inv_m = 1.0 / m;
-        rev.resize(m), rev.resize(m);
+        rev.resize(m), rpt.resize(m);
         for (int i = 1; i < m; i <<= 1) {
             rpt[i] = 1;
             for (int j = 1; j < i; j++)
@@ -29,7 +29,8 @@ struct fft_base : vector<CP> {
     }
     void dft() {
         auto& t = *this; t.resize(m);
-        for (int i = 1; i < m; i++) if (i < rev[i]) std::swap(t[i], t[rev[i]]);
+        for (int i = 1; i < m; i++)
+            if (i < rev[i]) std::swap(t[i], t[rev[i]]);
         for (int i = 1; i < m; i <<= 1) {
             for (int j = 0; j < m; j += i << 1) {
                 for (int k = 0; k < i; k++) {
